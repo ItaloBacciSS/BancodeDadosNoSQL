@@ -147,12 +147,6 @@ def total_acessos(data: str = datetime.now().strftime("%Y-%m-%d")):
     total = redis_client.bitcount(chave)
     return {"data": data, "total_acessos": total}
 
-@app.post("/analytics/bloom/adicionar")
-def adicionar_artista(nome: str):
-    redis_client.execute_command("BF.RESERVE", "filtro_artistas", 0.01, 1000)
-    redis_client.execute_command("BF.ADD", "filtro_artistas", nome)
-    return {"mensagem": f"Artista {nome} adicionado ao filtro"}
-
 @app.get("/analytics/bloom/verificar")
 def verificar_artista(nome: str):
     existe = redis_client.execute_command("BF.EXISTS", "filtro_artistas", nome)

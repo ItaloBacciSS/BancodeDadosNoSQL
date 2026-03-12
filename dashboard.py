@@ -27,7 +27,6 @@ opcao = st.sidebar.radio(
         "Busca por Localização",
         "Última Música Cadastrada",
         "Contador de Acessos",
-        "Eventos em Tempo Real",
         "Analytics - Bitmap",
         "Analytics - Bloom Filter",
         "Analytics - HyperLogLog",
@@ -171,24 +170,6 @@ elif opcao == "Contador de Acessos":
             st.error("Erro ao buscar contador")
 
 # ======================================================
-# EVENTOS EM TEMPO REAL
-# ======================================================
-elif opcao == "Eventos em Tempo Real":
-    st.header("📡 Eventos em tempo real")
-    limite = st.slider("Quantos eventos mostrar?", 5, 20, 10)
-    if st.button("Carregar eventos"):
-        response = requests.get(f"{API_URL}/musicas/eventos", params={"limit": limite})
-        if response.status_code == 200:
-            eventos = response.json()["eventos"]
-            if eventos:
-                for e in eventos:
-                    st.info(e)
-            else:
-                st.warning("Nenhum evento registrado ainda")
-        else:
-            st.error("Erro ao buscar eventos")
-
-# ======================================================
 # ANALYTICS - BITMAP
 # ======================================================
 elif opcao == "Analytics - Bitmap":
@@ -208,9 +189,6 @@ elif opcao == "Analytics - Bitmap":
 elif opcao == "Analytics - Bloom Filter":
     st.header("🌱 Bloom Filter - Artistas")
     nome = st.text_input("Nome do artista")
-    if st.button("Adicionar artista"):
-        response = requests.post(f"{API_URL}/analytics/bloom/adicionar", params={"nome": nome})
-        st.success(response.json()["mensagem"])
     if st.button("Verificar artista"):
         response = requests.get(f"{API_URL}/analytics/bloom/verificar", params={"nome": nome})
         dados = response.json()
