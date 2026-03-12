@@ -26,6 +26,7 @@ opcao = st.sidebar.radio(
         "Busca Textual",
         "Busca por Localização",
         "Última Música Cadastrada",
+        "Evento em tempo real",
         "Contador de Acessos",
         "Analytics - Bitmap",
         "Analytics - Bloom Filter",
@@ -154,6 +155,28 @@ elif opcao == "Última Música Cadastrada":
                 st.warning(dados.get("mensagem", "Nenhum dado disponível"))
         else:
             st.error("Erro ao buscar última música")
+
+elif opcao == "Eventos em Tempo Real":
+    st.header("📡 Eventos em tempo real")
+
+    import redis, time
+
+    redis_client = redis.Redis(host="localhost", port=6379, db=0)
+    pubsub = redis_client.pubsub()
+    pubsub.subscribe("musicas")
+
+    placeholder = st.empty()
+
+    # Loop controlado: roda por alguns segundos e atualiza a tela
+    for i, mensagem in enumerate(pubsub.listen()):
+        if mensagem["type"] == "message":
+            evento = mensagem["data"].decode()
+            placeholder.info(f"🔔 {evento}")
+        time.sleep(1)  # evita travar a interface
+
+        # Para não travar o Streamlit, limite o loop
+        if i > 20:  # escuta 20 mensagens e para
+            break
 
 # ======================================================
 # CONTADOR DE ACESSOS

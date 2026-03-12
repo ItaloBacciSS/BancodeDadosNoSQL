@@ -2,8 +2,6 @@ import redis
 
 redis_client = redis.Redis(host="localhost", port=6379, db=0)
 pubsub = redis_client.pubsub()
-
-# Inscreve no canal "musicas"
 pubsub.subscribe("musicas")
 
 print("📡 Ouvindo canal 'musicas'...")
